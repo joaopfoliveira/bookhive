@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - 6379:6379
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - 27017:27017
+  eureka:
+    container_name: eureka
+    image: 'docker.io/library/eureka:0.0.1-SNAPSHOT'
+    ports:
+      - 8761:8761
+  auth:
+    container_name: auth
+    image: 'docker.io/library/auth:0.0.1-SNAPSHOT'
+    ports:
+      - 8555:8555
+    depends_on:
+      eureka:
+        condition: service_started
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://mongodb:27017"
+      SERVICE_URL_DEFAULT_ZONE: "http://eurekauser:eureka!@eureka:8761/eureka"
+      SPRING_DATA_REDIS_HOST: "redis"
