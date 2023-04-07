@@ -11,7 +11,7 @@ import lombok.NonNull;
 @Document(collection = "users")
 @Data
 @NoArgsConstructor
-public class User{
+public class User {
     private String id;
 
     @NonNull

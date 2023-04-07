@@ -32,3 +32,28 @@ services:
       SPRING_DATA_MONGODB_URI: "mongodb://mongodb:27017"
       SERVICE_URL_DEFAULT_ZONE: "http://eurekauser:eureka!@eureka:8761/eureka"
       SPRING_DATA_REDIS_HOST: "redis"
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: ./api-gateway/
+      dockerfile: Dockerfile
+    volumes:
+      - ./api-gateway/:/app
+      - ~/.m2:/root/.m2
+    working_dir: /app
+    command: sh run.sh
+    ports:
+      - "8765:8765"
+      - "5005:5005"
+    environment:
+      SERVICE_URL_DEFAULT_ZONE: "http://eurekauser:eureka!@eureka:8761/eureka"
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    ports:
+      - "8083:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: "mongodb://mongodb:27017"
+    depends_on:
+      mongodb:
+        condition: service_started
