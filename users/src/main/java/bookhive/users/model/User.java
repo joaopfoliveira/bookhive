@@ -1,17 +1,18 @@
-package bookhive.auth.model;
+package bookhive.users.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import lombok.NonNull;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+
 
 @Document(collection = "user")
 @Data
@@ -75,17 +76,17 @@ public class User implements Serializable {
 
     @Field(name = "isReadOnlyUser")
     private boolean isReadOnlyUser;
-
     @Field(name = "sellerBio")
     private String sellerBio;
 
     @Override
-    public String toString() {
-        if (isAdmin.equalsIgnoreCase("Y")) {
+    public String toString()
+    {
+        if(isAdmin.equalsIgnoreCase("Y")) {
             return "User [id=" + id + ", uname=" + username + ", Admin User]";
         } else {
             return "User [id=" + id + ", uname=" + username + "]";
         }
     }
-}
 
+}

@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,8 +33,11 @@ public class JwtVerifierFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        String bearerToken = httpServletRequest.getHeader(SecurityConstants.HEADER);
-        if(!(validStringToken(bearerToken) && bearerToken.startsWith(SecurityConstants.PREFIX))) {
+        String bearerToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+
+        boolean condicaoestragada = !(validStringToken(bearerToken) && bearerToken.startsWith(SecurityConstants.PREFIX));
+
+        if(condicaoestragada) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
             return;
         }
@@ -62,6 +66,8 @@ public class JwtVerifierFilter extends OncePerRequestFilter {
 
         httpServletRequest.setAttribute("username", username);
         httpServletRequest.setAttribute("authorities", grantedAuthorities);
+        httpServletRequest.setAttribute("jwt", token);
+
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
 

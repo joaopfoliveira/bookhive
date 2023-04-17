@@ -1,7 +1,7 @@
 package bookhive.auth.services;
 
+import bookhive.auth.model.User;
 import bookhive.auth.repositories.UserRepository;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

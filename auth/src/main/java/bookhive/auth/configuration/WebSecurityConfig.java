@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class WebSecurityConfig {
@@ -23,7 +24,18 @@ public class WebSecurityConfig {
     @Autowired
     private TokenRedisService redisService;
 
-    public void configureJwt(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setPasswordEncoder(encoder());
+        authenticationProvider.setUserDetailsService(applicationUserDetailsService);
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        return authenticationManagerBuilder.authenticationProvider(authenticationProvider).build();
+    }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -34,16 +46,7 @@ public class WebSecurityConfig {
                 .anyRequest()
                 .authenticated()
                 .and().httpBasic();
-    }
-
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider(AuthenticationManagerBuilder auth) {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setPasswordEncoder(encoder());
-        authenticationProvider.setUserDetailsService(applicationUserDetailsService);
-
-        auth.authenticationProvider(authenticationProvider);
-        return authenticationProvider;
+        return http.build();
     }
 
     @Bean

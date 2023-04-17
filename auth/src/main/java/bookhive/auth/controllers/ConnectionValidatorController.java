@@ -22,9 +22,10 @@ public class ConnectionValidatorController {
     @GetMapping(value = "", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ConnValidationResponse> validateGet(HttpServletRequest request) {
         String username = (String) request.getAttribute("username");
+        String token = (String) request.getAttribute("jwt");
         List<GrantedAuthority> grantedAuthorities = (List<GrantedAuthority>) request.getAttribute("authorities");
         return ResponseEntity.ok(ConnValidationResponse.builder().status("OK").methodType(HttpMethod.GET.name())
-                .username(username).authorities(grantedAuthorities)
+                .username(username).token(token).authorities(grantedAuthorities)
                 .isAuthenticated(true).build());
     }
 
@@ -36,6 +37,7 @@ public class ConnectionValidatorController {
         private boolean isAuthenticated;
         private String methodType;
         private String username;
+        private String token;
         private List<GrantedAuthority> authorities;
     }
 

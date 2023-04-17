@@ -5,22 +5,37 @@ services:
     container_name: redis
     image: redis
     ports:
-      - 6379:6379
+      - "6379:6379"
   mongodb:
     container_name: mongodb
     image: mongo
     ports:
-      - 27017:27017
+      - "27017:27017"
   eureka:
     container_name: eureka
-    image: 'docker.io/library/eureka:0.0.1-SNAPSHOT'
+    build:
+      context: ./eureka/
+      dockerfile: Dockerfile
+    volumes:
+      - ./eureka/:/app
+      - ~/.m2:/root/.m2
+    working_dir: /app
+    command: sh run.sh
     ports:
-      - 8761:8761
+      - "8761:8761"
   auth:
     container_name: auth
-    image: 'docker.io/library/auth:0.0.1-SNAPSHOT'
+    build:
+      context: ./auth/
+      dockerfile: Dockerfile
+    volumes:
+      - ./auth/:/app
+      - ~/.m2:/root/.m2
+    working_dir: /app
+    command: sh run.sh
     ports:
-      - 8555:8555
+      - "8555:8555"
+      - "5006:5006"
     depends_on:
       eureka:
         condition: service_started
