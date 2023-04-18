@@ -12,10 +12,10 @@ import java.util.Set;
 @NoArgsConstructor
 public class ConnValidationResponse {
     private String status;
-    private boolean isAuthenticated;
+    private boolean authenticated;
     private String methodType;
     private String username;
     private String token;
-    private Set<String> authorities;
+    private List<Authority> authorities;
 }
 

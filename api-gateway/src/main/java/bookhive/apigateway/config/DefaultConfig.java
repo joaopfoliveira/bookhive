@@ -41,11 +41,7 @@ public class DefaultConfig {
                                         .filter(authFilter.apply(
                                                 new AuthenticationPreFilter.Config())))
                         .uri("lb://user-service"))
-                .route("test", r -> r.path("/test/**")
-                        .filters(f ->
-                                f.rewritePath("/authentication-service(?<segment>/?.*)", "$\\{segment}"))
-                        .uri("http://www.youtube.com"))
-                .build();
+               .build();
     }
 
     @Bean

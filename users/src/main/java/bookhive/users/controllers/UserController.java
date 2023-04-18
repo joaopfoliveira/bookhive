@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,15 +40,16 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
 
     }
-/*
+
+    @PreAuthorize("hasAnyAuthority('USER_READ', 'USER')")
     @GetMapping("/{username}")
     public ResponseEntity<?> getUserById(@PathVariable(value = "username") String username) {
         try {
-            return new ResponseEntity<>(userService.loadUserByUsername(username), HttpStatus.OK);
+            return new ResponseEntity<>(userService.getByUsername(username), HttpStatus.OK);
         } catch (UsernameNotFoundException usernameNotFoundException) {
             return new ResponseEntity<>(usernameNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
         }
-    }*/
+    }
 
     @PreAuthorize("hasAnyAuthority('USER_WRITE')")
     @PostMapping(value = "/authenticate", consumes = {MediaType.APPLICATION_JSON_VALUE},

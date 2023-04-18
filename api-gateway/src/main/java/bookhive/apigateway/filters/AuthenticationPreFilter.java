@@ -1,5 +1,6 @@
 package bookhive.apigateway.filters;
 
+import bookhive.apigateway.model.Authority;
 import bookhive.apigateway.model.ConnValidationResponse;
 import bookhive.apigateway.model.ExceptionResponseModel;
 import bookhive.apigateway.security.SecurityConstants;
@@ -50,7 +51,7 @@ public class AuthenticationPreFilter extends AbstractGatewayFilterFactory<Authen
             log.info("**************************************************************************");
             log.info("URL is - " + request.getURI().getPath());
             String bearerToken = request.getHeaders().getFirst(SecurityConstants.HEADER);
-            log.info("Bearer Token: "+ bearerToken);
+            log.info("Bearer Token: " + bearerToken);
 
             if(isSecured.test(request)) {
                 return webClientBuilder.build().get()
@@ -59,7 +60,7 @@ public class AuthenticationPreFilter extends AbstractGatewayFilterFactory<Authen
                         .retrieve().bodyToMono(ConnValidationResponse.class)
                         .map(response -> {
                             exchange.getRequest().mutate().header("username", response.getUsername());
-                            exchange.getRequest().mutate().header("authorities", response.getAuthorities().stream().reduce("", (a, b) -> a + "," + b));
+                            exchange.getRequest().mutate().header("authorities", response.getAuthorities().stream().map(Authority::authority).reduce("", (a, b) -> a + "," + b));
 
                             return exchange;
                         }).flatMap(chain::filter).onErrorResume(error -> {

@@ -1,5 +1,5 @@
 #!/bin/bash
-./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008" &
+./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5010" &
 while true; do
   inotifywait -e modify,create,delete,move -r ./src/ && ./mvnw compile
 done

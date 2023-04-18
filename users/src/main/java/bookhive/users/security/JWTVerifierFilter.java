@@ -26,7 +26,6 @@ public class JWTVerifierFilter extends OncePerRequestFilter {
 
         logHeaders(httpServletRequest);
         String username=httpServletRequest.getHeader("username");
-        List<Map<String, String>> authorities = new ArrayList<>();
         String authoritiesStr = httpServletRequest.getHeader("authorities");
         Set<SimpleGrantedAuthority> simpleGrantedAuthorities = new HashSet<>();
         if(Utilities.validString(authoritiesStr)) {
